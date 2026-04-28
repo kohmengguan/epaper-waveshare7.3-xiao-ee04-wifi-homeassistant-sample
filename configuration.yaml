@@ -1,0 +1,35 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load requirements for pyscript which runs our python scripts
+pyscript:
+  allow_all_imports: true
+  requirements:
+    - Pillow
+media_source:
+homeassistant:
+  media_dirs:
+    local_public: /config/www
+    preview: /config/www/eink_frame
+    eframe: /config/www/eink_frame/pool_all
+
+# Pyscript logging
+logger:
+  default: info
+  logs:
+    custom_components.pyscript: debug
+
+# Persistent Sensor that reads the JSON file
+command_line:
+  - sensor:
+      name: "Eink Library"
+      unique_id: eink_library_persistent
+      # This reads the actual file from the disk
+      command: "cat /config/www/eink_frame/eink_db.json"
+      # The main state will be the current active image
+      value_template: "{{ value_json.current_image }}"
+      # This puts the whole JSON into an attribute called 'attr'
+      json_attributes:
+        - images
+        - settings
+      scan_interval: 300 # Back-up auto-refresh every 5 mins
